@@ -34,15 +34,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Screen extends StatelessWidget {
+class Screen extends StatefulWidget {
   const Screen({super.key});
+
+  @override
+  State<Screen> createState() => _ScreenState();
+}
+
+class _ScreenState extends State<Screen> {
+  void _changeBoard() {
+    print("Success!");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [GameGrid(), Text("Loading...")],
+        children: [
+          GameGrid(),
+          ElevatedButton(onPressed: _changeBoard, child: Text("Go")),
+        ],
       ),
     );
   }
