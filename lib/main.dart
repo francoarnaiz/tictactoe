@@ -4,6 +4,16 @@ void main() {
   runApp(const MyApp());
 }
 
+enum Piece { X, O, none }
+
+String getPiece(Piece piece) {
+  return switch (piece) {
+    Piece.X => "X",
+    Piece.O => "O",
+    Piece.none => "",
+  };
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
