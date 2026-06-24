@@ -90,7 +90,11 @@ class GameGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                  Spot(getPiece(board[gridRow][gridColumn]), 0, 0),
+                  Spot(
+                    getPiece(board[gridRow][gridColumn]),
+                    gridColumn,
+                    gridRow,
+                  ),
               ],
             ),
         ],
