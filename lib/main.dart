@@ -14,29 +14,38 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepOrange)),
       home: Scaffold(
         appBar: AppBar(title: Text("Tic-Tac-Toe!")),
-        body: Column(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var i = 0; i < 3; i++)
-              Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < 3; i++)
-                    Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                      ),
-                      child: Center(child: Text("O")),
-                    ),
-                ],
-              ),
-          ],
-        ),
+        body: Screen(),
       ),
+    );
+  }
+}
+
+class Screen extends StatelessWidget {
+  const Screen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (var i = 0; i < 3; i++)
+          Row(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var i = 0; i < 3; i++)
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Center(child: Text("O")),
+                ),
+            ],
+          ),
+      ],
     );
   }
 }
