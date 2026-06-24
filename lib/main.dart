@@ -84,12 +84,13 @@ class GameGrid extends StatelessWidget {
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          for (var gridRow in board)
+          for (var gridRow = 0; gridRow < 3; gridRow++)
             Row(
               spacing: 10,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for (var gridPiece in gridRow) Spot(getPiece(gridPiece)),
+                for (var gridColumn = 0; gridColumn < 3; gridColumn++)
+                  Spot(getPiece(board[gridRow][gridColumn]), 0, 0),
               ],
             ),
         ],
@@ -99,12 +100,14 @@ class GameGrid extends StatelessWidget {
 }
 
 class Spot extends StatelessWidget {
-  const Spot(this.piece, {super.key});
+  const Spot(this.piece, this.column, this.row, {super.key});
 
   final String piece;
+  final int row;
+  final int column;
 
-  void placePiece() {
-    print("Piece placed!");
+  void placePiece(int row, int column) {
+    print("Piece placed at $row and $column!");
   }
 
   @override
@@ -114,7 +117,7 @@ class Spot extends StatelessWidget {
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: ElevatedButton(
-        onPressed: placePiece,
+        onPressed: () => placePiece(row, column),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
