@@ -60,11 +60,13 @@ class GameGrid extends StatelessWidget {
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          for (var i = 0; i < 3; i++)
+          for (var gridRow in board)
             Row(
               spacing: 10,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [for (var i = 0; i < 3; i++) Spot("X")],
+              children: [
+                for (var gridPiece in gridRow) Spot(getPiece(gridPiece)),
+              ],
             ),
         ],
       ),
@@ -83,7 +85,7 @@ class Spot extends StatelessWidget {
       height: 100,
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Center(child: Text("X")),
+      child: Center(child: Text(piece)),
     );
   }
 }
