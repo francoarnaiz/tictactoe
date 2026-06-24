@@ -46,7 +46,7 @@ class Screen extends StatefulWidget {
 }
 
 class _ScreenState extends State<Screen> {
-  void _changeBoard() {
+  void changeBoard() {
     setState(() {
       fillBoard(Piece.O);
     });
@@ -65,7 +65,7 @@ class _ScreenState extends State<Screen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GameGrid(),
-          ElevatedButton(onPressed: _changeBoard, child: Text("Go")),
+          ElevatedButton(onPressed: changeBoard, child: Text("Go")),
         ],
       ),
     );
@@ -103,13 +103,23 @@ class Spot extends StatelessWidget {
 
   final String piece;
 
+  void placePiece() {
+    print("Piece placed!");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Center(child: Text(piece)),
+      child: ElevatedButton(
+        onPressed: placePiece,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+        child: Text(piece),
+      ),
     );
   }
 }
