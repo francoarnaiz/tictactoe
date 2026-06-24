@@ -14,10 +14,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepOrange)),
       home: Scaffold(
         appBar: AppBar(title: Text("Tic-Tac-Toe!")),
-        body: Center(
-          child: Column(
-            children: [for (var i = 0; i < 3; i++) Text("Loading...")],
-          ),
+        body: Column(
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < 3; i++)
+              Row(
+                spacing: 10,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [for (var i = 0; i < 3; i++) Text("O")],
+              ),
+          ],
         ),
       ),
     );
