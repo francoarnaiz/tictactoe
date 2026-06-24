@@ -4,11 +4,15 @@ void main() {
   runApp(const MyApp());
 }
 
+List<List<Piece>> board = [[], [], []];
+
 enum Piece { X, O, none }
 
-List<List<Piece>> board = [
-  for (var x = 0; x < 3; x++) [for (var x = 0; x < 3; x++) Piece.none],
-];
+void fillBoard(Piece piece) {
+  board = [
+    for (var x = 0; x < 3; x++) [for (var x = 0; x < 3; x++) piece],
+  ];
+}
 
 String getPiece(Piece piece) {
   return switch (piece) {
@@ -43,7 +47,15 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   void _changeBoard() {
-    print("Success!");
+    setState(() {
+      fillBoard(Piece.O);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fillBoard(Piece.none);
   }
 
   @override
