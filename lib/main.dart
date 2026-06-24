@@ -6,6 +6,10 @@ void main() {
 
 enum Piece { X, O, none }
 
+List<List<Piece>> board = [
+  for (var x = 0; x < 3; x++) [for (var x = 0; x < 3; x++) Piece.none],
+];
+
 String getPiece(Piece piece) {
   return switch (piece) {
     Piece.X => "X",
