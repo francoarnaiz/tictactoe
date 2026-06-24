@@ -22,7 +22,17 @@ class MyApp extends StatelessWidget {
               Row(
                 spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [for (var i = 0; i < 3; i++) Text("O")],
+                children: [
+                  for (var i = 0; i < 3; i++)
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: Center(child: Text("O")),
+                    ),
+                ],
               ),
           ],
         ),
