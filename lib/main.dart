@@ -14,6 +14,14 @@ void fillBoard(Piece piece) {
   ];
 }
 
+void addPiece(int row, int column, Piece piece) {
+  if (piece == Piece.none) {
+    throw "Error: Tried adding nothing to a spot!";
+  }
+
+  board[row][column] = piece;
+}
+
 String getPiece(Piece piece) {
   return switch (piece) {
     Piece.X => "X",
@@ -48,7 +56,7 @@ class Screen extends StatefulWidget {
 class _ScreenState extends State<Screen> {
   void changeBoard() {
     setState(() {
-      fillBoard(Piece.O);
+      addPiece(0, 0, Piece.X);
     });
   }
 
