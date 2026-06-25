@@ -14,11 +14,11 @@ void fillBoard(Piece piece) {
   ];
 }
 
-void addPiece(int row, int column, Piece piece) {
+void addPiece(int column, int row, Piece piece) {
   if (piece == Piece.none) {
     throw "Error: Tried adding nothing to a spot!";
   }
-
+  print("Placing a piece on row $row and column $column...");
   board[row][column] = piece;
 }
 
@@ -54,9 +54,13 @@ class Screen extends StatefulWidget {
 }
 
 class _ScreenState extends State<Screen> {
-  void changeBoard() {
+  var nextRow = 0;
+  var nextColumn = 0;
+  var nextPiece = Piece.none;
+
+  void placePiece(int column, int row, Piece piece) {
     setState(() {
-      addPiece(0, 0, Piece.X);
+      addPiece(column, row, piece);
     });
   }
 
@@ -72,10 +76,16 @@ class _ScreenState extends State<Screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GameGrid((int row, int column, Piece piece) {
-            print("${getPiece(piece)} placed on $column, $row.");
+          GameGrid((int column, int row, Piece piece) {
+            print("Row $row and column $column selected.");
+            nextRow = row;
+            nextColumn = column;
+            nextPiece = piece;
           }),
-          ElevatedButton(onPressed: changeBoard, child: Text("Go")),
+          ElevatedButton(
+            onPressed: () => placePiece(nextColumn, nextRow, nextPiece),
+            child: Text("Go"),
+          ),
         ],
       ),
     );
@@ -85,7 +95,7 @@ class _ScreenState extends State<Screen> {
 class GameGrid extends StatelessWidget {
   const GameGrid(this._onPlace, {super.key});
 
-  final void Function(int row, int column, Piece piece) _onPlace;
+  final void Function(int column, int row, Piece piece) _onPlace;
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +116,8 @@ class GameGrid extends StatelessWidget {
                     getPiece(board[gridRow][gridColumn]),
                     gridColumn,
                     gridRow,
-                    (int row, int column, Piece piecePlaced) {
-                      _onPlace(row, column, piecePlaced);
+                    (int column, int row, Piece piecePlaced) {
+                      _onPlace(column, row, piecePlaced);
                     },
                   ),
               ],
