@@ -8,6 +8,20 @@ List<List<Piece>> board = [[], [], []];
 
 enum Piece { X, O, none }
 
+Piece nextPlayer = Piece.O;
+
+void togglePlayer() {
+  nextPlayer = switch (nextPlayer) {
+    Piece.X => Piece.O,
+    Piece.O => Piece.X,
+    _ => Piece.none,
+  };
+
+  if (nextPlayer == Piece.none) {
+    throw "Error: no nextPlayer!";
+  }
+}
+
 void fillBoard(Piece piece) {
   board = [
     for (var x = 0; x < 3; x++) [for (var x = 0; x < 3; x++) piece],
@@ -18,7 +32,6 @@ void addPiece(int column, int row, Piece piece) {
   if (piece == Piece.none) {
     throw "Error: Tried adding nothing to a spot!";
   }
-  print("Placing a piece on row $row and column $column...");
   board[row][column] = piece;
 }
 
@@ -62,6 +75,8 @@ class _ScreenState extends State<Screen> {
     setState(() {
       addPiece(column, row, piece);
     });
+
+    togglePlayer();
   }
 
   @override
@@ -77,7 +92,6 @@ class _ScreenState extends State<Screen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GameGrid((int column, int row, Piece piece) {
-            print("Row $row and column $column selected.");
             nextRow = row;
             nextColumn = column;
             nextPiece = piece;
@@ -143,7 +157,7 @@ class Spot extends StatelessWidget {
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: ElevatedButton(
-        onPressed: () => _onPlace(column, row, Piece.O),
+        onPressed: () => _onPlace(column, row, nextPlayer),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
