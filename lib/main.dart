@@ -64,7 +64,9 @@ class _ScreenState extends State<Screen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GameGrid(),
+          GameGrid((int row, int column, Piece piece) {
+            print("${getPiece(piece)} placed on $column, $row.");
+          }),
           ElevatedButton(onPressed: changeBoard, child: Text("Go")),
         ],
       ),
@@ -73,7 +75,9 @@ class _ScreenState extends State<Screen> {
 }
 
 class GameGrid extends StatelessWidget {
-  const GameGrid({super.key});
+  const GameGrid(this._onPlace, {super.key});
+
+  final void Function(int row, int column, Piece piece) _onPlace;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +98,9 @@ class GameGrid extends StatelessWidget {
                     getPiece(board[gridRow][gridColumn]),
                     gridColumn,
                     gridRow,
+                    (int row, int column, Piece piecePlaced) {
+                      _onPlace(row, column, piecePlaced);
+                    },
                   ),
               ],
             ),
@@ -104,15 +111,12 @@ class GameGrid extends StatelessWidget {
 }
 
 class Spot extends StatelessWidget {
-  const Spot(this.piece, this.column, this.row, {super.key});
+  const Spot(this.piece, this.column, this.row, this._onPlace, {super.key});
 
   final String piece;
   final int row;
   final int column;
-
-  void placePiece(int row, int column) {
-    print("Piece placed at $row and $column!");
-  }
+  final void Function(int column, int row, Piece piecePlaced) _onPlace;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +125,7 @@ class Spot extends StatelessWidget {
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: ElevatedButton(
-        onPressed: () => placePiece(row, column),
+        onPressed: () => _onPlace(column, row, Piece.O),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
