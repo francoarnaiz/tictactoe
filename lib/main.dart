@@ -32,9 +32,14 @@ void addPiece(int column, int row, Piece piece) {
   if (piece == Piece.none) {
     throw "Error: Tried adding nothing to a spot!";
   }
-  board[row][column] = piece;
+  if (board[row][column] != Piece.none) {
+    print("That spot is filled!");
+  } else {
+    board[row][column] = piece;
+  }
 }
 
+// TODO: stop player toggling when trying to play in a filled spot
 String getPiece(Piece piece) {
   return switch (piece) {
     Piece.X => "X",
