@@ -283,6 +283,19 @@ class SpotLogic extends StatelessWidget {
 }
 
 // View
+class SpotUI extends StatefulWidget {
+  SpotUI({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _SpotUIState();
+}
+
+class _SpotUIState extends State<SpotUI> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 class PlaceButton extends StatelessWidget {
   const PlaceButton({required this._onPress, super.key});
