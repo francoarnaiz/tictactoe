@@ -32,23 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepOrange)),
       home: Scaffold(
         appBar: AppBar(title: Text("Tic-Tac-Toe!")),
-        body: Screen(),
-      ),
-    );
-  }
-}
-
-class Screen extends StatelessWidget {
-  Screen({super.key});
-
-  final grid = GameGrid();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [grid],
+        body: GameGrid(),
       ),
     );
   }
@@ -149,10 +133,8 @@ class _GameGridState extends State<GameGrid> {
 
   int addPiece(int column, int row, Piece piece) {
     if (piece == Piece.none) {
-      print("Error: Tried adding nothing to a spot!");
       return err;
     } else if (board[row][column] != Piece.none) {
-      print("That spot is filled!");
       return err;
     } else {
       board[row][column] = piece;
@@ -193,52 +175,52 @@ class _GameGridState extends State<GameGrid> {
       listenable: updater,
       builder: (context, _) {
         return Column(
-          spacing: 0,
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 10,
           children: [
             Center(
               child: Text(
                 gameStatus,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 48),
+                style: TextStyle(fontSize: 30),
               ),
             ),
             Center(
-              child: Padding(
-                padding: EdgeInsets.all(0),
-                child: SizedBox(
-                  height: 600,
-                  width: 600,
-                  child: Column(
-                    spacing: 10,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (var gridRow = 0; gridRow < 3; gridRow++)
-                        Row(
-                          spacing: 10,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (
-                              var gridColumn = 0;
-                              gridColumn < 3;
-                              gridColumn++
-                            )
-                              Spot(
-                                getPiece(board[gridRow][gridColumn]),
-                                gridColumn,
-                                gridRow,
-                                (int column, int row) {
-                                  nextColumn = column;
-                                  nextRow = row;
-                                },
-                              ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
+              child: Column(
+                spacing: 10,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var gridRow = 0; gridRow < 3; gridRow++)
+                    Row(
+                      spacing: 10,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (var gridColumn = 0; gridColumn < 3; gridColumn++)
+                          Spot(
+                            getPiece(board[gridRow][gridColumn]),
+                            gridColumn,
+                            gridRow,
+                            (int column, int row) {
+                              nextColumn = column;
+                              nextRow = row;
+                            },
+                          ),
+                      ],
+                    ),
+                ],
               ),
             ),
-            ElevatedButton(onPressed: () => submit(), child: Text("Go")),
+            ElevatedButton(
+              onPressed: () => submit(),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
+                fixedSize: WidgetStateProperty.all(Size(150, 150)),
+              ),
+              child: Text(
+                "Go",
+                style: TextStyle(color: Colors.white, fontSize: 40),
+              ),
+            ),
           ],
         );
       },
