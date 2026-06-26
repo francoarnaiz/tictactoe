@@ -269,6 +269,11 @@ class SpotLogic extends StatelessWidget {
   }
 }
 
+// ViewModel
+class SpotUpdater extends ChangeNotifier {
+  //TODO: implement viewmodel and link view
+}
+
 // View
 class SpotUI extends StatefulWidget {
   SpotUI({super.key});
