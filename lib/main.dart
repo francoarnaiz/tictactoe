@@ -59,17 +59,24 @@ class GameGrid extends StatefulWidget {
 //Grid View State
 class _GameGridState extends State<GameGrid> {
   var updater = Updater();
-
-  var isGameOver = false;
   var nextRow = 0;
   var nextColumn = 0;
-  Piece nextPlayer = Piece.O;
   var gameStatus = "";
+  var isGameOver = false;
+
+  void newGame() {
+    gameStatus = "Next Player: O";
+    isGameOver = false;
+    nextPlayer = Piece.O;
+    fillBoard(Piece.none);
+    updater.update();
+  }
 
   void submit() {
     placePiece(nextColumn, nextRow, nextPlayer);
 
     var winner = checkWinner();
+
     gameStatus = switch (winner) {
       "O" => "O wins!",
       "X" => "X wins!",
@@ -174,8 +181,7 @@ class _GameGridState extends State<GameGrid> {
   @override
   void initState() {
     super.initState();
-    gameStatus = "Next Player: O";
-    fillBoard(Piece.none);
+    newGame();
   }
 
   @override
@@ -205,7 +211,7 @@ class _GameGridState extends State<GameGrid> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                          Spot(
+                          SpotLogic(
                             board[gridRow][gridColumn],
                             gridColumn,
                             gridRow,
@@ -221,7 +227,7 @@ class _GameGridState extends State<GameGrid> {
             ),
             switch (isGameOver) {
               false => PlaceButton(onPress: submit),
-              true => RestartButton(onPress: submit),
+              true => RestartButton(onPress: newGame),
             },
           ],
         );
@@ -230,8 +236,15 @@ class _GameGridState extends State<GameGrid> {
   }
 }
 
-class Spot extends StatelessWidget {
-  const Spot(this.piece, this.column, this.row, this._onClick, {super.key});
+//  Model
+class SpotLogic extends StatelessWidget {
+  const SpotLogic(
+    this.piece,
+    this.column,
+    this.row,
+    this._onClick, {
+    super.key,
+  });
 
   final Piece piece;
   final int column;
@@ -268,6 +281,8 @@ class Spot extends StatelessWidget {
     );
   }
 }
+
+// View
 
 class PlaceButton extends StatelessWidget {
   const PlaceButton({required this._onPress, super.key});
