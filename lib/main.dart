@@ -60,6 +60,7 @@ class GameGrid extends StatefulWidget {
 class _GameGridState extends State<GameGrid> {
   var updater = Updater();
 
+  var isGameOver = false;
   var nextRow = 0;
   var nextColumn = 0;
   Piece nextPlayer = Piece.O;
@@ -75,6 +76,11 @@ class _GameGridState extends State<GameGrid> {
       "none" => "Next player: ${getPiece(nextPlayer)}",
       "tie" => "Tie!",
       _ => "Error!",
+    };
+
+    isGameOver = switch (winner) {
+      "X" || "O" || "tie" => true,
+      _ => false,
     };
 
     updater.update();
@@ -200,7 +206,7 @@ class _GameGridState extends State<GameGrid> {
                       children: [
                         for (var gridColumn = 0; gridColumn < 3; gridColumn++)
                           Spot(
-                            getPiece(board[gridRow][gridColumn]),
+                            board[gridRow][gridColumn],
                             gridColumn,
                             gridRow,
                             (int column, int row) {
@@ -213,17 +219,10 @@ class _GameGridState extends State<GameGrid> {
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () => submit(),
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.blue),
-                fixedSize: WidgetStateProperty.all(Size(150, 150)),
-              ),
-              child: Text(
-                "Go",
-                style: TextStyle(color: Colors.white, fontSize: 40),
-              ),
-            ),
+            switch (isGameOver) {
+              false => PlaceButton(onPress: submit),
+              true => RestartButton(onPress: submit),
+            },
           ],
         );
       },
@@ -234,7 +233,7 @@ class _GameGridState extends State<GameGrid> {
 class Spot extends StatelessWidget {
   const Spot(this.piece, this.column, this.row, this._onClick, {super.key});
 
-  final String piece;
+  final Piece piece;
   final int column;
   final int row;
   final void Function(int column, int row) _onClick;
@@ -242,15 +241,70 @@ class Spot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
-      width: 150,
-      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      decoration: BoxDecoration(
+        border: Border.all(width: 2, color: Colors.black),
+      ),
       child: ElevatedButton(
         onPressed: () => _onClick(column, row),
         style: ElevatedButton.styleFrom(
+          elevation: 5,
+          fixedSize: Size(150, 150),
+          backgroundColor: switch (piece) {
+            Piece.none => Colors.grey,
+            Piece.X => Colors.green,
+            Piece.O => Colors.red,
+          },
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
-        child: Text(piece),
+        child: Text(
+          getPiece(piece),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 75,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PlaceButton extends StatelessWidget {
+  const PlaceButton({required this._onPress, super.key});
+
+  final void Function() _onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _onPress(),
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(Colors.blue),
+        fixedSize: WidgetStateProperty.all(Size(150, 150)),
+      ),
+      child: Text("Place", style: TextStyle(color: Colors.white, fontSize: 40)),
+    );
+  }
+}
+
+class RestartButton extends StatelessWidget {
+  const RestartButton({required this._onPress, super.key});
+
+  final void Function() _onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => _onPress(),
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(
+          const Color.fromARGB(255, 8, 63, 109),
+        ),
+        fixedSize: WidgetStateProperty.all(Size(150, 150)),
+      ),
+      child: Text(
+        "Restart",
+        style: TextStyle(color: Colors.white, fontSize: 30),
       ),
     );
   }
