@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const err = 0;
+const success = 1;
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,18 +31,19 @@ void fillBoard(Piece piece) {
   ];
 }
 
-void addPiece(int column, int row, Piece piece) {
+int addPiece(int column, int row, Piece piece) {
   if (piece == Piece.none) {
-    throw "Error: Tried adding nothing to a spot!";
-  }
-  if (board[row][column] != Piece.none) {
+    print("Error: Tried adding nothing to a spot!");
+    return err;
+  } else if (board[row][column] != Piece.none) {
     print("That spot is filled!");
+    return err;
   } else {
     board[row][column] = piece;
+    return success;
   }
 }
 
-// TODO: stop player toggling when trying to play in a filled spot
 String getPiece(Piece piece) {
   return switch (piece) {
     Piece.X => "X",
@@ -78,10 +82,10 @@ class _ScreenState extends State<Screen> {
 
   void placePiece(int column, int row, Piece piece) {
     setState(() {
-      addPiece(column, row, piece);
+      if (addPiece(column, row, piece) == success) {
+        togglePlayer();
+      }
     });
-
-    togglePlayer();
   }
 
   @override
