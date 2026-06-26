@@ -13,35 +13,10 @@ enum Piece { X, O, none }
 
 Piece nextPlayer = Piece.O;
 
-void togglePlayer() {
-  nextPlayer = switch (nextPlayer) {
-    Piece.X => Piece.O,
-    Piece.O => Piece.X,
-    _ => Piece.none,
-  };
-
-  if (nextPlayer == Piece.none) {
-    throw "Error: no nextPlayer!";
-  }
-}
-
 void fillBoard(Piece piece) {
   board = [
     for (var x = 0; x < 3; x++) [for (var x = 0; x < 3; x++) piece],
   ];
-}
-
-int addPiece(int column, int row, Piece piece) {
-  if (piece == Piece.none) {
-    print("Error: Tried adding nothing to a spot!");
-    return err;
-  } else if (board[row][column] != Piece.none) {
-    print("That spot is filled!");
-    return err;
-  } else {
-    board[row][column] = piece;
-    return success;
-  }
 }
 
 String getPiece(Piece piece) {
@@ -68,17 +43,62 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Screen extends StatefulWidget {
-  const Screen({super.key});
+class Screen extends StatelessWidget {
+  Screen({super.key});
+
+  final grid = GameGrid();
 
   @override
-  State<Screen> createState() => _ScreenState();
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [grid],
+      ),
+    );
+  }
 }
 
-class _ScreenState extends State<Screen> {
+//View-Model Connection
+class Updater extends ChangeNotifier {
+  void update() {
+    notifyListeners();
+  }
+}
+
+// Grid View
+class GameGrid extends StatefulWidget {
+  const GameGrid({super.key});
+
+  @override
+  State<GameGrid> createState() => _GameGridState();
+}
+
+//Grid View State
+class _GameGridState extends State<GameGrid> {
+  var updater = Updater();
+
   var nextRow = 0;
   var nextColumn = 0;
-  var nextPiece = Piece.none;
+  Piece nextPlayer = Piece.O;
+
+  void submit() {
+    placePiece(nextColumn, nextRow, nextPlayer);
+    updater.update();
+  }
+
+  int addPiece(int column, int row, Piece piece) {
+    if (piece == Piece.none) {
+      print("Error: Tried adding nothing to a spot!");
+      return err;
+    } else if (board[row][column] != Piece.none) {
+      print("That spot is filled!");
+      return err;
+    } else {
+      board[row][column] = piece;
+      return success;
+    }
+  }
 
   void placePiece(int column, int row, Piece piece) {
     setState(() {
@@ -86,6 +106,18 @@ class _ScreenState extends State<Screen> {
         togglePlayer();
       }
     });
+  }
+
+  void togglePlayer() {
+    nextPlayer = switch (nextPlayer) {
+      Piece.X => Piece.O,
+      Piece.O => Piece.X,
+      _ => Piece.none,
+    };
+
+    if (nextPlayer == Piece.none) {
+      throw "Error: no nextPlayer!";
+    }
   }
 
   @override
@@ -96,68 +128,55 @@ class _ScreenState extends State<Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GameGrid((int column, int row, Piece piece) {
-            nextRow = row;
-            nextColumn = column;
-            nextPiece = piece;
-          }),
-          ElevatedButton(
-            onPressed: () => placePiece(nextColumn, nextRow, nextPiece),
-            child: Text("Go"),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GameGrid extends StatelessWidget {
-  const GameGrid(this._onPlace, {super.key});
-
-  final void Function(int column, int row, Piece piece) _onPlace;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 500,
-      width: 500,
-      child: Column(
-        spacing: 10,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          for (var gridRow = 0; gridRow < 3; gridRow++)
-            Row(
-              spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                  Spot(
-                    getPiece(board[gridRow][gridColumn]),
-                    gridColumn,
-                    gridRow,
-                    (int column, int row, Piece piecePlaced) {
-                      _onPlace(column, row, piecePlaced);
-                    },
-                  ),
-              ],
+    return ListenableBuilder(
+      listenable: updater,
+      builder: (context, _) {
+        return Column(
+          children: [
+            Text("Next Player: ${getPiece(nextPlayer)}"),
+            SizedBox(
+              height: 600,
+              width: 600,
+              child: Column(
+                spacing: 10,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var gridRow = 0; gridRow < 3; gridRow++)
+                    Row(
+                      spacing: 10,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (var gridColumn = 0; gridColumn < 3; gridColumn++)
+                          Spot(
+                            getPiece(board[gridRow][gridColumn]),
+                            gridColumn,
+                            gridRow,
+                            (int column, int row) {
+                              nextColumn = column;
+                              nextRow = row;
+                              print("Selected row $nextRow, col $nextColumn");
+                            },
+                          ),
+                      ],
+                    ),
+                ],
+              ),
             ),
-        ],
-      ),
+            ElevatedButton(onPressed: () => submit(), child: Text("Go")),
+          ],
+        );
+      },
     );
   }
 }
 
 class Spot extends StatelessWidget {
-  const Spot(this.piece, this.column, this.row, this._onPlace, {super.key});
+  const Spot(this.piece, this.column, this.row, this._onClick, {super.key});
 
   final String piece;
-  final int row;
   final int column;
-  final void Function(int column, int row, Piece piecePlaced) _onPlace;
+  final int row;
+  final void Function(int column, int row) _onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +185,7 @@ class Spot extends StatelessWidget {
       width: 100,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: ElevatedButton(
-        onPressed: () => _onPlace(column, row, nextPlayer),
+        onPressed: () => _onClick(column, row),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
