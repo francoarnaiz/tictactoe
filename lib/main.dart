@@ -65,11 +65,12 @@ class _GameGridState extends State<GameGrid> {
   var isGameOver = false;
 
   void newGame() {
-    gameStatus = "Next Player: O";
-    isGameOver = false;
-    nextPlayer = Piece.O;
-    fillBoard(Piece.none);
-    updater.update();
+    setState(() {
+      gameStatus = "Next Player: O";
+      isGameOver = false;
+      nextPlayer = Piece.O;
+      fillBoard(Piece.none);
+    });
   }
 
   void submit() {
@@ -186,52 +187,47 @@ class _GameGridState extends State<GameGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: updater,
-      builder: (context, _) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 10,
-          children: [
-            Center(
-              child: Text(
-                gameStatus,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            Center(
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var gridRow = 0; gridRow < 3; gridRow++)
-                    Row(
-                      spacing: 10,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                          SpotLogic(
-                            board[gridRow][gridColumn],
-                            gridColumn,
-                            gridRow,
-                            (int column, int row) {
-                              nextColumn = column;
-                              nextRow = row;
-                            },
-                          ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-            switch (isGameOver) {
-              false => PlaceButton(onPress: submit),
-              true => RestartButton(onPress: newGame),
-            },
-          ],
-        );
-      },
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 10,
+      children: [
+        Center(
+          child: Text(
+            gameStatus,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+        Center(
+          child: Column(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var gridRow = 0; gridRow < 3; gridRow++)
+                Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var gridColumn = 0; gridColumn < 3; gridColumn++)
+                      SpotLogic(
+                        board[gridRow][gridColumn],
+                        gridColumn,
+                        gridRow,
+                        (int column, int row) {
+                          nextColumn = column;
+                          nextRow = row;
+                        },
+                      ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+        switch (isGameOver) {
+          false => PlaceButton(onPress: submit),
+          true => RestartButton(onPress: newGame),
+        },
+      ],
     );
   }
 }
