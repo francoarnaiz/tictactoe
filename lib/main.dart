@@ -29,10 +29,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepOrange)),
       home: Scaffold(
-        appBar: AppBar(title: Text("Tic-Tac-Toe!")),
+        appBar: AppBar(
+          title: Text("Tic-Tac-Toe!"),
+          backgroundColor: Colors.blue,
+        ),
         body: GameGrid(),
+        backgroundColor: Colors.deepOrange,
       ),
     );
   }
