@@ -193,33 +193,49 @@ class _GameGridState extends State<GameGrid> {
       listenable: updater,
       builder: (context, _) {
         return Column(
+          spacing: 0,
           children: [
-            Text(gameStatus),
-            SizedBox(
-              height: 600,
-              width: 600,
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var gridRow = 0; gridRow < 3; gridRow++)
-                    Row(
-                      spacing: 10,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                          Spot(
-                            getPiece(board[gridRow][gridColumn]),
-                            gridColumn,
-                            gridRow,
-                            (int column, int row) {
-                              nextColumn = column;
-                              nextRow = row;
-                            },
-                          ),
-                      ],
-                    ),
-                ],
+            Center(
+              child: Text(
+                gameStatus,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 48),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(0),
+                child: SizedBox(
+                  height: 600,
+                  width: 600,
+                  child: Column(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var gridRow = 0; gridRow < 3; gridRow++)
+                        Row(
+                          spacing: 10,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (
+                              var gridColumn = 0;
+                              gridColumn < 3;
+                              gridColumn++
+                            )
+                              Spot(
+                                getPiece(board[gridRow][gridColumn]),
+                                gridColumn,
+                                gridRow,
+                                (int column, int row) {
+                                  nextColumn = column;
+                                  nextRow = row;
+                                },
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
             ElevatedButton(onPressed: () => submit(), child: Text("Go")),
@@ -241,8 +257,8 @@ class Spot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      width: 100,
+      height: 150,
+      width: 150,
       decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       child: ElevatedButton(
         onPressed: () => _onClick(column, row),
