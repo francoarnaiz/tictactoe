@@ -41,14 +41,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//View-Model Connection
-class Updater extends ChangeNotifier {
-  void update() {
-    notifyListeners();
-  }
-}
-
-// Grid View
 class GameGrid extends StatefulWidget {
   const GameGrid({super.key});
 
@@ -58,7 +50,6 @@ class GameGrid extends StatefulWidget {
 
 //Grid View State
 class _GameGridState extends State<GameGrid> {
-  var updater = Updater();
   var nextRow = 0;
   var nextColumn = 0;
   var gameStatus = "";
@@ -74,24 +65,24 @@ class _GameGridState extends State<GameGrid> {
   }
 
   void submit() {
-    placePiece(nextColumn, nextRow, nextPlayer);
+    setState(() {
+      placePiece(nextColumn, nextRow, nextPlayer);
 
-    var winner = checkWinner();
+      var winner = checkWinner();
 
-    gameStatus = switch (winner) {
-      "O" => "O wins!",
-      "X" => "X wins!",
-      "none" => "Next player: ${getPiece(nextPlayer)}",
-      "tie" => "Tie!",
-      _ => "Error!",
-    };
+      gameStatus = switch (winner) {
+        "O" => "O wins!",
+        "X" => "X wins!",
+        "none" => "Next player: ${getPiece(nextPlayer)}",
+        "tie" => "Tie!",
+        _ => "Error!",
+      };
 
-    isGameOver = switch (winner) {
-      "X" || "O" || "tie" => true,
-      _ => false,
-    };
-
-    updater.update();
+      isGameOver = switch (winner) {
+        "X" || "O" || "tie" => true,
+        _ => false,
+      };
+    });
   }
 
   void fillBoard(Piece piece) {
