@@ -82,13 +82,13 @@ class _GameGridState extends State<GameGrid> {
     placePiece(nextColumn, nextRow, nextPlayer);
 
     var winner = checkWinner();
-    if (winner == Piece.O) {
-      gameStatus = "O wins!";
-    } else if (winner == Piece.X) {
-      gameStatus = "X wins!";
-    } else {
-      gameStatus = "Next player: ${getPiece(nextPlayer)}";
-    }
+    gameStatus = switch (winner) {
+      "O" => "O wins!",
+      "X" => "X wins!",
+      "none" => "Next player: ${getPiece(nextPlayer)}",
+      "tie" => "Tie!",
+      _ => "Error!",
+    };
 
     updater.update();
   }
@@ -99,15 +99,15 @@ class _GameGridState extends State<GameGrid> {
     ];
   }
 
-  Piece checkWinner() {
+  String checkWinner() {
     var xWin = [Piece.X, Piece.X, Piece.X];
     var oWin = [Piece.O, Piece.O, Piece.O];
 
     for (var row in board) {
       if (listEquals(row, xWin)) {
-        return Piece.X;
+        return "X";
       } else if (listEquals(row, oWin)) {
-        return Piece.O;
+        return "O";
       }
     }
 
@@ -120,9 +120,9 @@ class _GameGridState extends State<GameGrid> {
 
     for (var column in boardColumns) {
       if (listEquals(column, xWin)) {
-        return Piece.X;
+        return "X";
       } else if (listEquals(column, oWin)) {
-        return Piece.O;
+        return "O";
       }
     }
 
@@ -131,13 +131,20 @@ class _GameGridState extends State<GameGrid> {
       [board[0][2], board[1][1], board[2][0]],
     ]) {
       if (listEquals(diagonal, xWin)) {
-        return Piece.X;
+        return "X";
       } else if (listEquals(diagonal, oWin)) {
-        return Piece.O;
+        return "O";
       }
     }
 
-    return Piece.none;
+    if (listEquals(
+      [for (var row in board) row.indexOf(Piece.none)],
+      [-1, -1, -1],
+    )) {
+      return "tie";
+    }
+
+    return "none";
   }
 
   int addPiece(int column, int row, Piece piece) {
