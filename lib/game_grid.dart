@@ -22,7 +22,7 @@ class _GameGridState extends State<GameGrid> {
   var isGameOver = false;
 
   SpotView _buildSpot(int column, int row) {
-    SpotView newSpot = SpotView();
+    SpotView newSpot = SpotView(updateGrid: _changeTarget);
     newSpot.vm.setLocation(column, row);
     return newSpot;
   }
@@ -128,6 +128,11 @@ class _GameGridState extends State<GameGrid> {
         togglePlayer();
       }
     });
+  }
+
+  void _changeTarget(int column, int row) {
+    nextColumn = column;
+    nextRow = row;
   }
 
   void togglePlayer() {

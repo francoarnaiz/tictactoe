@@ -21,9 +21,9 @@ class SpotVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _onClick() {
+  void _updateSpot() {
     model.selected = true;
-    print("Clicked!");
+    notifyListeners();
   }
 
   void deselect() {
@@ -33,15 +33,21 @@ class SpotVM extends ChangeNotifier {
 }
 
 class SpotView extends StatefulWidget {
-  SpotView({super.key});
+  SpotView({required this.updateGrid, super.key});
 
   final SpotVM vm = SpotVM(SpotModel());
+  final Function(int, int) updateGrid;
 
   @override
   State<StatefulWidget> createState() => _SpotState();
 }
 
 class _SpotState extends State<SpotView> {
+  void _onClicked() {
+    widget.vm._updateSpot();
+    widget.updateGrid(widget.vm.model.column, widget.vm.model.row);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -52,7 +58,7 @@ class _SpotState extends State<SpotView> {
             border: Border.all(width: 2, color: Colors.black),
           ),
           child: ElevatedButton(
-            onPressed: widget.vm._onClick,
+            onPressed: _onClicked,
             style: ElevatedButton.styleFrom(
               elevation: 5,
               fixedSize: Size(150, 150),
