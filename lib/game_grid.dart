@@ -3,7 +3,7 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tictactoe/game_constants.dart';
-import 'package:tictactoe/spot_widget.dart';
+import 'package:tictactoe/spot.dart';
 import 'package:tictactoe/buttons.dart';
 
 // Grid View
@@ -166,15 +166,7 @@ class _GameGridState extends State<GameGrid> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                      SpotLogic(
-                        board[gridRow][gridColumn],
-                        gridColumn,
-                        gridRow,
-                        (int column, int row) {
-                          nextColumn = column;
-                          nextRow = row;
-                        },
-                      ),
+                      SpotView(),
                   ],
                 ),
             ],

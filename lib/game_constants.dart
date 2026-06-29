@@ -15,4 +15,8 @@ String getPiece(Piece piece) {
   };
 }
 
-List<List<Piece>> board = [[], [], []];
+List<List<Piece>> board = [
+  [Piece.none],
+  [Piece.X],
+  [],
+]; // TEMP
