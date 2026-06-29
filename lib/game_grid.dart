@@ -6,12 +6,6 @@ import 'package:tictactoe/game_constants.dart';
 import 'package:tictactoe/spot_widget.dart';
 import 'package:tictactoe/buttons.dart';
 
-class Updater extends ChangeNotifier {
-  void update() {
-    notifyListeners();
-  }
-}
-
 // Grid View
 class GameGrid extends StatefulWidget {
   const GameGrid({super.key});
@@ -22,39 +16,39 @@ class GameGrid extends StatefulWidget {
 
 //Grid View State
 class _GameGridState extends State<GameGrid> {
-  var updater = Updater();
   var nextRow = 0;
   var nextColumn = 0;
   var gameStatus = "";
   var isGameOver = false;
 
   void newGame() {
-    gameStatus = "Next Player: O";
-    isGameOver = false;
-    nextPlayer = Piece.O;
-    fillBoard(Piece.none);
-    updater.update();
+    setState(() {
+      gameStatus = "Next Player: O";
+      isGameOver = false;
+      nextPlayer = Piece.O;
+      fillBoard(Piece.none);
+    });
   }
 
   void submit() {
-    placePiece(nextColumn, nextRow, nextPlayer);
+    setState(() {
+      placePiece(nextColumn, nextRow, nextPlayer);
 
-    var winner = checkWinner();
+      var winner = checkWinner();
 
-    gameStatus = switch (winner) {
-      "O" => "O wins!",
-      "X" => "X wins!",
-      "none" => "Next player: ${getPiece(nextPlayer)}",
-      "tie" => "Tie!",
-      _ => "Error!",
-    };
+      gameStatus = switch (winner) {
+        "O" => "O wins!",
+        "X" => "X wins!",
+        "none" => "Next player: ${getPiece(nextPlayer)}",
+        "tie" => "Tie!",
+        _ => "Error!",
+      };
 
-    isGameOver = switch (winner) {
-      "X" || "O" || "tie" => true,
-      _ => false,
-    };
-
-    updater.update();
+      isGameOver = switch (winner) {
+        "X" || "O" || "tie" => true,
+        _ => false,
+      };
+    });
   }
 
   void fillBoard(Piece piece) {
@@ -150,52 +144,47 @@ class _GameGridState extends State<GameGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: updater,
-      builder: (context, _) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 10,
-          children: [
-            Center(
-              child: Text(
-                gameStatus,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            Center(
-              child: Column(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var gridRow = 0; gridRow < 3; gridRow++)
-                    Row(
-                      spacing: 10,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                          SpotLogic(
-                            board[gridRow][gridColumn],
-                            gridColumn,
-                            gridRow,
-                            (int column, int row) {
-                              nextColumn = column;
-                              nextRow = row;
-                            },
-                          ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-            switch (isGameOver) {
-              false => PlaceButton(onPress: submit),
-              true => RestartButton(onPress: newGame),
-            },
-          ],
-        );
-      },
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 10,
+      children: [
+        Center(
+          child: Text(
+            gameStatus,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+        Center(
+          child: Column(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var gridRow = 0; gridRow < 3; gridRow++)
+                Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var gridColumn = 0; gridColumn < 3; gridColumn++)
+                      SpotLogic(
+                        board[gridRow][gridColumn],
+                        gridColumn,
+                        gridRow,
+                        (int column, int row) {
+                          nextColumn = column;
+                          nextRow = row;
+                        },
+                      ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+        switch (isGameOver) {
+          false => PlaceButton(onPress: submit),
+          true => RestartButton(onPress: newGame),
+        },
+      ],
     );
   }
 }
