@@ -3,19 +3,27 @@ library;
 import 'package:flutter/material.dart';
 import 'package:tictactoe/game_constants.dart';
 
-String testImport() {
-  return ("Test Success!");
+class SpotLogic {
+  final Piece piece = Piece.none;
+  final int column = 0;
+  final int row = 0;
+  void _onClick {}
+  final bool selected = false;
+}
+//TODO: remove constructors and add a "build spot" method!
+class SpotUpdater extends ChangeNotifier {
+  SpotUpdater(this.piece, this.column, this.row, this._onClick);
+
+  final Piece piece;
+  final int column;
+  final int row;
+  final void Function(int column, int row) _onClick;
+
+  final SpotLogic logic = SpotLogic(piece, column, row, _onClick);
 }
 
-//  Model
-class SpotLogic extends StatelessWidget {
-  const SpotLogic(
-    this.piece,
-    this.column,
-    this.row,
-    this._onClick, {
-    super.key,
-  });
+class SpotView extends StatelessWidget {
+  const SpotView(this.piece, this.column, this.row, this._onClick, {super.key});
 
   final Piece piece;
   final int column;

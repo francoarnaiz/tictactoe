@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tictactoe/spot_widget.dart';
 import 'package:tictactoe/game_grid.dart';
 
 void main() {
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(testImport()), // TEMP
+          title: Text("Tic-Tac-Toe!"),
           backgroundColor: Colors.blue,
         ),
         body: GameGrid(),
