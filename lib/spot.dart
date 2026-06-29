@@ -8,9 +8,6 @@ class SpotModel {
   var row = 0;
   Piece get piece => board[row][column];
   var selected = false;
-  void _onClick() {
-    print("Col $column, Row $row)");
-  }
 }
 
 // View Model
@@ -24,12 +21,12 @@ class SpotVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _select() {
+  void _onClick() {
     model.selected = true;
-    notifyListeners();
+    print("Clicked!");
   }
 
-  void _deselect() {
+  void deselect() {
     model.selected = false;
     notifyListeners();
   }
@@ -45,28 +42,35 @@ class SpotView extends StatefulWidget {
 }
 
 class _SpotState extends State<SpotView> {
-  void clicked() {
-    widget.vm._select();
-    widget.vm.model._onClick();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var c = widget.vm.model.column;
-    var r = widget.vm.model.row;
-    var p = getPiece(widget.vm.model.piece);
     return ListenableBuilder(
       listenable: widget.vm,
       builder: (context, _) {
-        return Center(
-          child: Column(
-            children: [
-              Text("C$c, R$r, $p", style: TextStyle(fontSize: 40)),
-              ElevatedButton(
-                onPressed: clicked,
-                child: Text("Go", style: TextStyle(fontSize: 20)),
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.black),
+          ),
+          child: ElevatedButton(
+            onPressed: widget.vm._onClick,
+            style: ElevatedButton.styleFrom(
+              elevation: 5,
+              fixedSize: Size(150, 150),
+              backgroundColor: switch (widget.vm.model.piece) {
+                Piece.none => Colors.grey,
+                Piece.X => Colors.green,
+                Piece.O => Colors.red,
+              },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            ),
+            child: Text(
+              getPiece(widget.vm.model.piece),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 75,
+                fontWeight: FontWeight.bold,
               ),
-            ],
+            ),
           ),
         );
       },

@@ -21,6 +21,12 @@ class _GameGridState extends State<GameGrid> {
   var gameStatus = "";
   var isGameOver = false;
 
+  SpotView _buildSpot(int column, int row) {
+    SpotView newSpot = SpotView();
+    newSpot.vm.setLocation(column, row);
+    return newSpot;
+  }
+
   void newGame() {
     setState(() {
       gameStatus = "Next Player: O";
@@ -166,7 +172,7 @@ class _GameGridState extends State<GameGrid> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     for (var gridColumn = 0; gridColumn < 3; gridColumn++)
-                      SpotView(),
+                      _buildSpot(gridColumn, gridRow),
                   ],
                 ),
             ],
